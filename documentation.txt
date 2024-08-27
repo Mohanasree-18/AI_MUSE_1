@@ -1,0 +1,384 @@
+This project is an AI content generator named  AI Content Generator. It uses ChatGPT integration and is built on a MERN stack (MongoDB, Express.js, React.js, and Node.js) foundation.
+
+Here are the key features:
+/ Free tier with 5 API requests per month and trial period with 1000 credits
+/ Paid plans with more credits
+/ User registration and login
+/ Content generation with credit usage tracking
+/ Payment integration with Stripe
+
+we use postman to test API 
+
+*command to run backend is <NPM RUN SERVER>
+
+
+                     <BACKEND>
+
+*FOLDERS AND FILE SETUP
+1.create backend folder
+2.initilase project 
+3.npm i express mongoose dotenv jsonwebtoken bcryptjs
+4.npm i nodemon -D
+5.configure package.json
+    main:server.js
+    start:node server.js
+6.folders creation
+7.we use MVC design pattern so create <controllers> folder and <models> folder
+8.create <routes>,<utils>,<middlewares> folders
+9.now create <server.js> file in backend folder not in any other
+
++
+/WE HAVE TO DEFINE SCHEMA IN <MODELS> FOLDERS AND THEN CONTROL EACH SCHEMA WITH EACH CORRESPONDING FILE IN <CONTROLLERS>
+  FODLER IN EACH CONTROLLER FILE WE NEED TO IMPORT ITS CORRESPONDING SCHEMA FILE AND <ROUTES> FOLDER CONATINS SAME NUMBER OF FILES AS MODELS AND CONTROLLERS 
+  TO ADD ROUTES FOR EACH CONTROLLER WE NEED TO CREATE CORRESPONDIN ROUTE FILE AND IMPORT THAT CONTROLLER FILE IN THAT ROUTE
+  SO THE FLOW IS 
+  *create file in <models> folder to define schema 
+  *import that model file in controller file and controller file contains code to deal with that schema
+  *now import this controller file in corresponding route file and route files contain routes to each controller 
+  *now import these routes in server.js and save that and run that
+/
+
+
+*<server.js> file
+1.write code into it and start the server
+
+*<models> folder -data modelling
+1.model files must have upperletter at starting
+2.create files called <User.js>,<Payment.js>,<ContentHistory.js>
+3.open User.js file and write user schema 
+4.same for payment and contentHistory files
+5.models folder is completed Here
+
+*<controllers> folder
+1.lets create <userctrl.js> file 
+    here we focus on authentication part
+    include parts like registration,login,logout,profile and check user Auth status
+    and write code into each field
+2. in this file we have 5 controllers for user only ao we export them seperate
+
+*<routes> folder
+1.create file called <usersRouter.js>
+2.now import usercontroller file here and add routes to them to acess
+3.now we have to use this inside the server.js file
+
+*MONGODB CONNECTION
+1.open utils folder and create a file called connectDb.js
+2.every time we write this connection to mongodb code in server.js only 
+3.but now fpr that we created an extra file in utils 
+4.write the code properly 
+5.import this file in server.js file
+
+*<MIDDLEWARES> folder
+1.create errorMiddleware.js file and writer error code
+2.now go to server.js and import this file
+
+*<userctrl.js>
+1.now lets implement login funcitonality
+2.in login we have to implement authentecation
+3.Here we use COOKIE BASED AUTHENTICATION 
+    i.e we are going to save the token in cookie of user
+    upon user login we will generate a token
+    Now we will save this token in a cookie
+
+1.lets implement profile functionlaity
+2.but user profile is sensitive so one can see it inly after login
+3.to implement this security we ise isAuthenticated middlewares
+4.in terminal npm cookie-parser
+
+
+*<OPENAI> API KEY BUT WE GONNA USE GEMINI API
+1.npm install @google/generative-ai
+2.write gemini code in aicontroller.js file
+
+*implementing 3 day free trail 
+1.go to users schema and in that registration give 100 credits as default on new registrtaion
+2.if a user completes their 3 day trail then they need to subscribe to any plan
+3.credits should expire after 3 days
+4.on every request or prompt inc apicount of that user by one
+
+*api count and middleware
+1.count no of api requests
+2.we will create one middleware function for tracking no of api req and if limit exceeds then error will be thrown
+3.create checkapirequestlimit.js file in middleware folder write code and export it
+4.import this middle ware in airouter.js file
+5.and insert this middleware after isauthenticated middleware in airouter.post req
+    i.e whenever user tries to make a request then we check his authentication and then its api count whether it is exceeded or not if not exceede then get response from ai,
+    if exceeded you wount get any response
+
+*STRIPE PAYMENT INTEGRATION
+1.first go to strip.com and create an account and then login
+2.we integrate stripe as our payment gateway for our app
+3.for this we use SDK i.e stripe Node.js Library
+4.<npm i stripe>
+5.go to stripe website and copy that secret key and paste it in .env file as STRIPE-secret
+6.now go to controllers folder and create handleStripePayment.js
+7.now go to routes folder and create a route for this i.e create stripeRouter.js
+
+
+*<utils> folder
+1.in order to nextbilling date we have to create 1 function
+2.for that create a file in utils folder <calculateNextBillingDate.js> file
+3.now import this utils file in handlestripe controller in order to handle free subscritions
+4.now go to utils folder angain and create another file called <shouldrenewornot.js>
+5.go to handlestripepayment and import this file in that
+
+
+*Handle stripe Payment
+1.stripe payment can be handled in 2 ways 
+        `webhook
+        `verify end point
+2.in our project we gonna use verification endpoint
+3.following are the imp points about webhooks
+
+/Here are some common use cases for webhooks in Stripe:
+Update Order Status: When a payment is successful (payment_intent.succeeded), your application can update the order status to "shipped" or "completed."
+Handle Failed Payments: Upon a payment failure (payment_intent.payment_failed), you might want to retry the payment, notify the customer, or offer alternative payment methods.
+Manage Subscriptions: Webhooks can notify you about subscription updates (customer.subscription.updated), such as a successful renewal or a cancellation. This allows you to update your subscription records and keep your system in sync.
+Detect Fraudulent Activity: Webhooks can alert you to suspicious events (charge.dispute.created) like a chargeback, so you can investigate and take necessary actions.
+By implementing webhooks, you ensure that your application remains up-to-date with the latest payment information, even if the customer interaction happens outside of your website. This helps you maintain a smooth user experience, handle payment issues effectively, and keep your data consistent.
+/
+
+4.following are the imp points about verification end points
+
+/Benefits of Using Verification Endpoints:
+Automatic Updates: You don't need to manually check verification status in your Stripe dashboard. Instead, you receive real-time notifications when verification is complete or encounters issues.
+Flexibility: You can customize your application's behavior based on verification results. For example, you might display a success message upon successful verification or prompt the user for additional information if verification fails.
+In essence, verification endpoints provide a way for your application to stay in sync with Stripe's identity verification process, allowing you to make informed decisions and improve the user experience.
+/
+
+
+*SUBSCRIPTION PLAN DETAILS
+TRAIL:will be given for nely registered and gets expire in 3 days
+
+after this trail expiration user needs to subscribe yo any of the following plans
+    1.free
+    2.basic
+    3.premium
+
+FREE:no payment is required to subscribe this plan
+BASIC:needs to pay some amount
+PREMIUM:needs to pay more amount
+
+*SUBSCRIPTION expiration
+we use CRON for this
+<npm node-cron>
+
+                     *CRON MODULE IN NODEJS
+Cron: A Node.js module is used to schedule tasks to run at specific times or intervals.
+here in our project its task is to expire plans after 1 month of subscrption for every month
+
+/Cron Jobs for Subscription Management:
+Cron: A Node.js module is used to schedule tasks to run at specific times or intervals.
+
+Two Cron Jobs are created:
+
+Cron for Trial Period: Checks daily to see if the trial period has ended for any users.
+If the trial has ended (based on the trialExpires date), the user's trial active status is set to false.
+Additionally, the subscription plan is changed to "free" and the monthly request count is set to a specific limit (e.g., 5 requests).
+
+Cron for Free/Paid Plans:
+Runs at the end of each month (based on cron expression).
+Checks for users with a "free" or paid plan ("basic" or "premium" mentioned in the video).
+For users with a free plan:
+If the next billing date (indicating a paid subscription) is less than the current date (meaning their paid subscription has expired), the user's monthly request count is set to zero.
+Presumably, a similar logic would apply to paid plans based on their renewal status (not explicitly mentioned in the excerpt).
+/
+
+/Cron expressions are used to define schedules for tasks in cron jobs. Here's a breakdown of the six fields in a cron expression:
+
+Field 1 (Second): Values range from 0 to 59, representing the second (0 for the first second, 59 for the last second of a minute).
+Field 2 (Minute): Values range from 0 to 59, representing the minute (0 for the first minute, 59 for the last minute of an hour).
+Field 3 (Hour): Values range from 0 to 23, representing the hour in 24-hour format (0 for midnight, 23 for the last hour of a day).
+Field 4 (Day of Month): Values range from 1 to 31, representing the day of the month.
+Field 5 (Month): Values range from 1 to 12, representing the month (1 for January, 12 for December).
+Field 6 (Day of Week): Values range from 0 to 6 (0 or 7 for Sunday), representing the day of the week.
+Cron uses asterisks () as wildcards to specify running a task at all possible values within a field. For example, " * * * *"  runs the task every second because asterisks are used in all fields.
+/
+
+cron.schedule("* * * * * *",()=>{
+    console.log("This CRON function runs for every second");
+});
+//?seconds,minutes,hours,day_of_month,month_of_year,day_of_week
+//?these six stars specifies that cron function should run every second
+
+
+*POPULATE METHOD IN <USERSCONTROLLER.JS FILE>
+
+populate("payments"):
+This populates the payments field of the user document.
+Assuming payments is an array of reference IDs to payment documents in another collection, populate will replace those IDs with the actual payment documents.
+
+*<npm run server> commmand to run backend
+
+                     <FRONTEND>
+
+1.create folder named FRONTEND
+2.command to run frontend is <npm run start>
+
+*<INSTALL REACT APP>
+1.install react project in frontend folder with following syntax
+    *npx create-react-app folder_name
+     we use  foldername or else you can just put "." if you have aleady opened that folder
+    so open terminal in frontend folder and run follwoing command
+    *npx create-react-app .
+
+*<INSTALL TAIWIND CSS>
+1.go to tailwind website >get started> framework guides>create react app
+2.copy command from there and paste it in terminal and run 
+    npm install -D tailwindcss
+    npx tailwindcss init
+3.now copy the code in cofigure your template in that website and paste it in your vs code tailwind.config,js file
+4.now copy the code that says "add the tailwind dorective to your css" in the website
+5.now open index.css in src folder and paste it here after clealring everything in index..css
+6.now copy code which says app.js in tailwind websiet and now open src folder and then app.js and paste that here after clearling everything that in app.js file i vs code
+7.now run <npm run start> you can see react app in browser
+
+*<REACT QUERY INSTALLATION>
+1.npm i @tanstack/react-query
+2.lets configure this in index.js file
+3.go to index file and import <QueryClient> and <QueryClientProvider>
+4.by using this lets wrap the whole recat app 
+
+*<DEV TOOLS INSTALLATION>
+1.this help us to manage state of the application
+2. in tanstcak website only click on dev TOOLS
+    run this in terminal <npm i @tanstack/react-query-devtools>
+3.import devtools in index.js file 
+    import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+4.and then wrap it in the code with inialsisopen as false i.e we dont want to open it by default
+5.now run and see browser now you can see small icon down which is devtools
+
+*<REACT ROUTER DOM INSTALLATION>
+1.install it with following command in terminal
+    <npm i react-router-dom>
+2.lets configure this 
+3.go to app.js and import it
+4.app.js file is what visible on browser so we write all routes in this file only
+5.in app.js file we declare routes for various components and their rendering
+    *app.js file -we implemnt react-router-dom
+    *index.js -we implement redux and react-query using providers and queryclientproviders
+6.lets create components in our react app
+
+                          <COMPONENTS>
+
+*<USER REGISTRATION>
+1.create components folder in src ,in that users folder and in that create register.js file
+    src> components> users> register.js
+2.open terminal and install formik and yup axios
+3.write code in this file save it
+4.go to app.js file and import this and give it a route and rendering element
+5.now we have to use react-query for actually making a request to register
+
+*<APIS FOLDER> IN SRC
+1.create a folder for react_query in src and name that folder <apis>
+2.in this apis folder we will have different folders for users,content... effectively
+3.create folder named users in apis folder
+4.in that create userapi.js folder
+5.in all apis files we will write a function that returns a promise and react-query will hand;e that promise
+6.open that userAPI.js file  Iimport axios here
+7.FOR AXIOS WE HAVE TO GIVE 2 ARGS 
+    1.URL
+    2.PAYLOAD
+8.but here we need to specify another argument sics we are using cookies
+    1.URL
+    2.PAYLOAD
+    3.withCredentials:true
+        with this arg as soon as we register it will set cookies in user browser
+
+*<login.js> file
+1.write code into this file
+2.go to apis folder and create an api for login in usersapi file
+3.now go to login.js file and import that api here
+4.import this file in app.js and write its route there
+5.now you can run and see this funcitonality
+
+*<register> file
+same as for login
+1.create file and write code
+2.go to userapi and create a registerapi
+3.open register.js file and import that api here
+4.now open app.js file and import registr.js file here and give it a route
+5.now run app you can see register components
+
+*<dashboard.js> file
+1.same
+2.create dashboard.js file and write code
+3.but dashboard is visible to only logged in users so we have to implete authorisation for this
+4.we have to create public and private navbars allows
+5.go to components folder and create navbar folder and create public and private files here
+6.now go to app.js and import both the navbars 
+7.before that install some packages which are needeed for navbars
+         npm i @headlessui/react @heroicons/react
+8.now after running app you can see private and public navbars
+
+*<HOME component>
+1.go to components folder and create folder HOME and write some code in home.js file
+2.now to go src and create asets folder to save images
+3.now go to app.js and import home and render it
+4.now go to home folder and  create other file homefeatures.js file and freetrail.js
+5.write codes into both the files and save them
+
+*<AUTHENTICATION>
+IN ORDER TO STORE COOKIE FOR AUTHENTICATION PURPOSES WE ARE GOING TO USE USECONTEXT API IN REACT
+1.go to src folder and create authcontext folder and crete a file authcontext.js file
+2.now go to userapi file and create an api to check authentication
+3.now import that api in authcontext .js file
+4.for authentication purpose we have created a custome hook
+5.this returns true if you are logged in user or else false
+6.we imoport this custom hook in app.js to render public and private bars
+7.create an object to this custom hook in app.js 
+8.and write a condition in place of rendering of this object is true then render privatenavbar or else oublic navbar
+
+*<logout functionality>
+1.this mean if you want to logout your token must be removed from cookie
+2.so we call a endpoint to tell backend to delete cookie
+3.go to userapi and create an api for logout 
+4.import that in private navbar component
+
+*PROTECTING COMPONENT>
+this is used to protect our compoents from unauthorised users
+1.to implement this protection we need to create a folder name AuthRoute in components 
+2.write authentication code in this file 
+3.go to app.js and import this authroute there
+4.now got to alert folder and create other js file authchecking
+5.now import this file in authroute and use this
+
+*<PLANS>
+1.here in plans section we display 3 cards of free basic and premium plans
+2.when we click on one plan we need to subscribe to it
+3.since free plan doenot need any payment it should not lead to stripe payment
+4.in all these three cards there is a "Buy Plan"  button whenver this button is clicked a form will be opened to enter credit card DETAILS
+5.so for this form component we are creating "Stripe" folder in components folder
+
+*<STRIPE Folder>
+1.in this folder create freeplansignup.js and write code into it to implement without stripe integration
+2.now we have 2 more plans basic and premium but these plans need stripe integration
+3.create another file in this folder named checkoutForm.js 
+4.write code into this and save
+5.go to app.js to mount that file
+6.inorder to use stripe go to index.js and import loadstripe
+7.in index.js file configure stripe to use
+
+/to get query we specified in url we use params
+/to get query after question mark we use searchparams
+
+
+Muse (source of inspiration)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
