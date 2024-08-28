@@ -3,7 +3,7 @@ import axios from "axios";
 
 export const registerAPI = async (userData) => {
   const response = await axios.post(
-    "https://ai-muse-1.vercel.app/api/v1/users/register",
+    "https://ai-muse-1.vercel.app/users/register",
     {
       email: userData?.email,
       password: userData?.password,
@@ -19,7 +19,7 @@ export const registerAPI = async (userData) => {
 
 export const loginAPI = async (userData) => {
   const response = await axios.post(
-    "https://ai-muse-1.vercel.app/api/v1/users/login",
+    "https://ai-muse-1.vercel.app/users/login",
     {
       email: userData?.email,
       password: userData?.password,
