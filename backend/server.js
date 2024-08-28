@@ -104,7 +104,7 @@ app.use(cookieParser()); //to parse cookies
 
 //!cors
 const corsOptions = {
-  origin: "http://localhost:3000",
+  origin: "https://ai-muse-1-frontend.vercel.app",
   credentials: true, //this arg is for cookies
 };
 app.use(cors(corsOptions));
