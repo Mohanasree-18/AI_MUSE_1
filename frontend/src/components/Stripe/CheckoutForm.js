@@ -48,7 +48,7 @@ const CheckoutForm = () => {
         elements,
         clientSecret: mutation.data?.clientSecret,
         confirmParams: {
-          return_url: "http://localhost:3000/success",
+          return_url: "https://ai-muse-1-frontend.vercel.app/success",
         },
       });
 
