@@ -3,7 +3,7 @@ import axios from "axios";
 
 export const registerAPI = async (userData) => {
   const response = await axios.post(
-    "http://localhost:8090/api/v1/users/register",
+    "https://ai-muse-1-mohanas-projects-c3f3df45.vercel.app/users/register",
     {
       email: userData?.email,
       password: userData?.password,
@@ -19,7 +19,7 @@ export const registerAPI = async (userData) => {
 
 export const loginAPI = async (userData) => {
   const response = await axios.post(
-    "http://localhost:8090/api/v1/users/login",
+    "https://ai-muse-1-mohanas-projects-c3f3df45.vercel.app/users/login",
     {
       email: userData?.email,
       password: userData?.password,
@@ -35,7 +35,7 @@ export const loginAPI = async (userData) => {
 
 export const checkUserAuthStatusAPI = async (userData) => {
   const response = await axios.get(
-    "http://localhost:8090/api/v1/users/auth/check",
+    "https://ai-muse-1-mohanas-projects-c3f3df45.vercel.app/users/auth/check",
     {
       withCredentials: true,
     }
@@ -47,7 +47,7 @@ export const checkUserAuthStatusAPI = async (userData) => {
 
 export const logoutAPI = async () => {
   const response = await axios.post(
-    "http://localhost:8090/api/v1/users/logout",
+    "https://ai-muse-1-mohanas-projects-c3f3df45.vercel.app/users/logout",
     {},
     {
       withCredentials: true,
@@ -60,7 +60,7 @@ export const logoutAPI = async () => {
 
 export const getUserProfileAPI = async () => {
   const response = await axios.get(
-    "http://localhost:8090/api/v1/users/profile",
+    "https://ai-muse-1-mohanas-projects-c3f3df45.vercel.app/users/profile",
     {
       withCredentials: true,
     }
