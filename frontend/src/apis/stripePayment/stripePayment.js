@@ -3,7 +3,7 @@ import axios from "axios";
 //stripe payment
 export const handleFreeSubscriptionAPI = async () => {
   const response = await axios.post(
-    "http://localhost:8090/api/v1/stripe/free-plan",
+    "https://ai-muse-1-mohanas-projects-c3f3df45.vercel.app/free-plan",
     {},
     {
       withCredentials: true,
