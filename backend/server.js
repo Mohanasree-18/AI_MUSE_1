@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+const PORT = process.env.PORT || 8090;
 const cookieParser = require("cookie-parser");
 require("dotenv").config();
 const cron = require("node-cron");
@@ -13,17 +14,108 @@ const stripeRouter = require("./routes/stripeRouter");
 const connectDB = require("./utils/connectDB");
 connectDB();
 
-//! MIDDLEWARES
-app.use(express.json()); // to parse incoming JSON data
-app.use(cookieParser()); // to parse cookies
-app.use(errorHandler); // error handler middleware
+//CRON
+//!Cron for the trial period : run every single day
+cron.schedule("0 0 * * * *", async () => {
+  console.log("This task runs every second");
+  try {
+    //get the current date
+    const today = new Date();
+    const updatedUser = await User.updateMany(
+      {
+        trialActive: true,
+        trialExpires: { $lt: today }, //that means user acc has expired
+      }, //users are retreived based on above properties
 
-//! CORS
+      {
+        //found uders will be modified with below properties
+        trialActive: false,
+        subscriptionPlan: "Free",
+        monthlyRequestCount: 5,
+      }
+    );
+    console.log(updatedUser);
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+//!Cron for the Free plan: run at the end of every month
+cron.schedule("0 0 1 * * *", async () => {
+  try {
+    //get the current date
+    const today = new Date();
+    await User.updateMany(
+      {
+        subscriptionPlan: "Free",
+        nextBillingDate: { $lt: today },
+      },
+      {
+        monthlyRequestCount: 0,
+      }
+    );
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+//!Cron for the Basic plan: run at the end of every month
+cron.schedule("0 0 1 * * *", async () => {
+  try {
+    //get the current date
+    const today = new Date();
+    await User.updateMany(
+      {
+        subscriptionPlan: "Basic",
+        nextBillingDate: { $lt: today },
+      },
+      {
+        monthlyRequestCount: 0,
+      }
+    );
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+//!Cron for the Premium plan: run at the end of every month
+cron.schedule("0 0 1 * * *", async () => {
+  try {
+    //get the current date
+    const today = new Date();
+    await User.updateMany(
+      {
+        subscriptionPlan: "Premium",
+        nextBillingDate: { $lt: today },
+      },
+      {
+        monthlyRequestCount: 0,
+      }
+    );
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+//!MIDDLEWARES
+app.use(express.json()); //to parse incoming json data
+app.use(errorHandler); //error handler middleare
+app.use(cookieParser()); //to parse cookies
+
+//!cors
 const corsOptions = {
-  origin: "https://ai-muse-1-frontend.vercel.app", // Update this to match your frontend URL
-  credentials: true, // This allows cookies to be sent from the client
+  origin: "https://ai-muse-1-frontend.vercel.app",
+  credentials: true, //this arg is for cookies
 };
 app.use(cors(corsOptions));
+
+//!ROUTES
+app.use("/api/v1/users", usersRouter);
+app.use("/api/v1/openai", AIRouter);
+app.use("/api/v1/stripe", stripeRouter);
+
+//!START THE SERVER
+app.listen(PORT, console.log(server is running on PORT:${PORT}));
 
 //! ROUTES
 app.use("/api/v1/users", usersRouter);
