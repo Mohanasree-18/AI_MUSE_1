@@ -17,7 +17,7 @@ export const handleFreeSubscriptionAPI = async () => {
 
 export const createStripePaymentIntentAPI = async (payment) => {
   const response = await axios.post(
-    "http://localhost:8090/api/v1/stripe/checkout",
+    "https://ai-muse-1.vercel.app/stripe/checkout",
     {
       amount: Number(payment?.amount),
       subscriptionPlan: payment?.plan,
@@ -32,7 +32,7 @@ export const createStripePaymentIntentAPI = async (payment) => {
 
 export const verifyPaymentAPI = async (paymentId) => {
   const response = await axios.post(
-    `http://localhost:8090/api/v1/stripe/verify-payment/${paymentId}`,
+    `https://ai-muse-1.vercel.app/stripe/verify-payment/${paymentId}`,
     {},
     {
       withCredentials: true,
