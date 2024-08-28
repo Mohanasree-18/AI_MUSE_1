@@ -104,7 +104,7 @@ app.use(cookieParser()); //to parse cookies
 
 //!cors
 const corsOptions = {
-  origin: "https://ai-muse-1-frontend.vercel.app",
+  origin: "https://vercel.com/mohanas-projects-c3f3df45/ai-muse-1-frontend",
   credentials: true, //this arg is for cookies
 };
 app.use(cors(corsOptions));
